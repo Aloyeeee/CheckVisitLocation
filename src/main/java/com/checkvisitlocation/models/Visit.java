@@ -1,6 +1,9 @@
 package com.checkvisitlocation.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
 import java.time.LocalDate;
 
 @Entity
@@ -25,6 +28,8 @@ public class Visit {
     private String impressions;
 
     @Column(nullable = false)
+    @Min(value = 1, message = "Rating must be at least 1")
+    @Max(value = 5, message = "Rating can't be more than 5")
     private int rating;
 
     public Long getId() {

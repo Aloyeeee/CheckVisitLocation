@@ -25,4 +25,5 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .filter(u -> passwordEncoder.matches(password, u.getPassword()));
     }
+
 }

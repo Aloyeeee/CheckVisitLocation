@@ -3,6 +3,13 @@ package com.checkvisitlocation.controllers;
 import com.checkvisitlocation.enums.ExportFormat;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.services.ExportService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/export")
+@Tag(name = "Export", description = "API для експорту даних")
 public class ExportController {
     private final ExportService exportService;
 
@@ -19,8 +27,29 @@ public class ExportController {
     }
 
     @GetMapping("/{format}")
+    @Operation(
+            summary = "Експорт відвідувань у вказаному форматі",
+            parameters = {
+                    @Parameter(
+                            name = "format",
+                            description = "Формат експорту (CSV, JSON, TEXT)",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            schema = @Schema(implementation = ExportFormat.class))
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Файл з експортованими даними",
+                            content = {
+                                    @Content(mediaType = "text/csv"),
+                                    @Content(mediaType = "application/json"),
+                                    @Content(mediaType = "text/plain")
+                            })
+            }
+    )
     public ResponseEntity<String> exportData(
-            @AuthenticationPrincipal User user,
+            @Parameter(hidden = true) @AuthenticationPrincipal User user,
             @PathVariable ExportFormat format) {
 
         var result = exportService.exportVisits(user, format);
