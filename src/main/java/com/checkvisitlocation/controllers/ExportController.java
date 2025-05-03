@@ -48,17 +48,19 @@ public class ExportController {
                             })
             }
     )
-    public ResponseEntity<String> exportData(
+    public ResponseEntity<?> exportData(
             @Parameter(hidden = true) @AuthenticationPrincipal User user,
             @PathVariable ExportFormat format) {
-
-        var result = exportService.exportVisits(user, format);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + result.filename() + "\"")
-                .contentType(getMediaType(format))
-                .body(result.content());
+        try {
+            var result = exportService.exportVisits(user, format);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + result.filename() + "\"")
+                    .contentType(getMediaType(format))
+                    .body(result.content());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Export failed: " + e.getMessage());
+        }
     }
 
     private MediaType getMediaType(ExportFormat format) {

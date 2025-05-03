@@ -6,6 +6,7 @@ public enum ExportFormat {
     TEXT;
 
     public String getExtension() {
+        // Повертаємо розширення в нижньому регістрі, як стандарт для файлів
         return name().toLowerCase();
     }
 }

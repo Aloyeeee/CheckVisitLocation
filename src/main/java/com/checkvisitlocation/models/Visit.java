@@ -1,8 +1,7 @@
 package com.checkvisitlocation.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -15,22 +14,27 @@ public class Visit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @NotNull(message = "User cannot be null")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
+    @NotNull(message = "Location cannot be null")
     private Location location;
 
     @Column(nullable = false)
+    @NotNull(message = "Visit date cannot be null")
     private LocalDate visitDate;
 
     @Column(length = 1000)
+    @Size(max = 1000, message = "Impressions cannot exceed 1000 characters")
     private String impressions;
 
     @Column(nullable = false)
+    @NotNull(message = "Rating cannot be null")
     @Min(value = 1, message = "Rating must be at least 1")
-    @Max(value = 5, message = "Rating can't be more than 5")
-    private int rating;
+    @Max(value = 5, message = "Rating cannot be more than 5")
+    private Integer rating;
 
     public Long getId() {
         return id;
@@ -72,11 +76,11 @@ public class Visit {
         this.impressions = impressions;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 }

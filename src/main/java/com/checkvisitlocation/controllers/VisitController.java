@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +53,7 @@ public class VisitController {
     )
     public Visit addVisit(
             @Parameter(hidden = true) @AuthenticationPrincipal User user,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Дані для створення відвідування",
                     required = true,
                     content = @Content(schema = @Schema(implementation = VisitRequest.class)))

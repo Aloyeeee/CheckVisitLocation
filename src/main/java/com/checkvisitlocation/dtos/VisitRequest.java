@@ -3,7 +3,6 @@ package com.checkvisitlocation.dtos;
 import com.checkvisitlocation.models.Location;
 import com.checkvisitlocation.models.Visit;
 import jakarta.validation.constraints.*;
-
 import java.time.LocalDate;
 
 public class VisitRequest {
@@ -20,6 +19,7 @@ public class VisitRequest {
     private Integer rating;
 
     @NotNull(message = "Visit date cannot be null")
+    @PastOrPresent(message = "Visit date cannot be in the future")
     private LocalDate visitDate;
 
     // Геттери та сеттери
@@ -57,14 +57,13 @@ public class VisitRequest {
 
     /**
      * Конвертує VisitRequest у сутність Visit
-     * @return новий об'єкт Visit з заповненими полями
+     * @return новий об'єкт Visit з заповненими полями (без user і location)
      */
     public Visit toVisit() {
         Visit visit = new Visit();
         visit.setImpressions(this.impressions);
         visit.setRating(this.rating);
         visit.setVisitDate(this.visitDate);
-        // Примітка: location та user мають бути встановлені окремо
         return visit;
     }
 
@@ -78,5 +77,3 @@ public class VisitRequest {
         return location;
     }
 }
-
-//TODO перепровірити використання toVisit (set user)
