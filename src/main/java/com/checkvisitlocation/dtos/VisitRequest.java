@@ -1,6 +1,5 @@
 package com.checkvisitlocation.dtos;
 
-import com.checkvisitlocation.models.Location;
 import com.checkvisitlocation.models.Visit;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
@@ -65,15 +64,5 @@ public class VisitRequest {
         visit.setRating(this.rating);
         visit.setVisitDate(this.visitDate);
         return visit;
-    }
-
-    /**
-     * Створює Location з locationId (для випадків, коли потрібен лише ідентифікатор)
-     * @return Location з встановленим id
-     */
-    public Location getLocation() {
-        Location location = new Location();
-        location.setId(this.locationId);
-        return location;
     }
 }

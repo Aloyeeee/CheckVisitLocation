@@ -67,7 +67,7 @@ public class ExportController {
         return switch (format) {
             case CSV -> MediaType.parseMediaType("text/csv");
             case JSON -> MediaType.APPLICATION_JSON;
-            case TEXT -> MediaType.TEXT_PLAIN;
+            case TXT -> MediaType.TEXT_PLAIN;
         };
     }
 }

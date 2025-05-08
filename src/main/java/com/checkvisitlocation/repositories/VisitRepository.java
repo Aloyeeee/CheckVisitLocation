@@ -14,6 +14,7 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     List<Visit> findByVisitDateBetween(LocalDate start, LocalDate end);
     List<Visit> findByUserAndVisitDateBetween(User user, LocalDate start, LocalDate end);
     List<Visit> findByUserAndLocationTypeIn(User user, List<LocationType> types);
+    List<Visit> findByUserAndRating(User user, Integer rating);
 
     @Query("SELECT AVG(v.rating) FROM Visit v WHERE v.user = :user")
     Double findAverageRatingByUser(User user);

@@ -3,7 +3,7 @@ package com.checkvisitlocation.enums;
 public enum ExportFormat {
     CSV,
     JSON,
-    TEXT;
+    TXT;
 
     public String getExtension() {
         // Повертаємо розширення в нижньому регістрі, як стандарт для файлів

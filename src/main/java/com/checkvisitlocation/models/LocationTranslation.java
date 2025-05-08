@@ -1,5 +1,6 @@
 package com.checkvisitlocation.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,7 @@ public class LocationTranslation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
+    @JsonBackReference
     private Location location;
 
     @Column(nullable = false)

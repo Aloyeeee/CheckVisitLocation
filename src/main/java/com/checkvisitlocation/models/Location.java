@@ -1,5 +1,6 @@
 package com.checkvisitlocation.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -47,10 +48,12 @@ public class Location {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "location-visits")
     private List<Visit> visits = new ArrayList<>();
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "location-translations")
     private List<LocationTranslation> translations = new ArrayList<>();
 
     // Геттери та сеттери

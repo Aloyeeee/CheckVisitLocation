@@ -1,6 +1,8 @@
 package com.checkvisitlocation.services;
 
+
 import com.checkvisitlocation.enums.ExportFormat;
+import com.checkvisitlocation.dtos.VisitResponse;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.models.Visit;
 import com.checkvisitlocation.repositories.VisitRepository;
@@ -32,7 +34,7 @@ public class ExportService {
             content = switch (format) {
                 case CSV -> toCsv(visits);
                 case JSON -> toJson(visits);
-                case TEXT -> toText(visits);
+                case TXT -> toText(visits);
             };
         } catch (Exception e) {
             logger.error("Failed to export visits for user {} in format {}: {}", user.getUsername(), format, e.getMessage());
@@ -60,7 +62,10 @@ public class ExportService {
     }
 
     private String toJson(List<Visit> visits) throws Exception {
-        return objectMapper.writeValueAsString(visits);
+        return objectMapper.writeValueAsString(
+                visits.stream()
+                .map(VisitResponse::new)
+                .collect(Collectors.toList()));
     }
 
     private String toText(List<Visit> visits) {
@@ -82,5 +87,6 @@ public class ExportService {
         return value;
     }
 
-    public record ExportResult(String filename, String content) {}
+    public record ExportResult(String filename, String content) {
+    }
 }
