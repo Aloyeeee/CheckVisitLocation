@@ -1,5 +1,6 @@
 package com.checkvisitlocation.models;
 
+import com.checkvisitlocation.enums.TagType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 

@@ -1,4 +1,4 @@
-package com.checkvisitlocation.models;
+package com.checkvisitlocation.enums;
 
 public enum LocationType {
     RESTAURANT,

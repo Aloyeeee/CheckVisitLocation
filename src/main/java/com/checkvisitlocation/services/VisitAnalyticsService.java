@@ -2,7 +2,6 @@ package com.checkvisitlocation.services;
 
 import com.checkvisitlocation.dtos.AnalyticsRequest;
 import com.checkvisitlocation.dtos.AnalyticsResponse;
-import com.checkvisitlocation.models.LocationType;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.models.Visit;
 import com.checkvisitlocation.repositories.VisitRepository;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -1,7 +1,7 @@
 package com.checkvisitlocation.repositories;
 
 import com.checkvisitlocation.models.Location;
-import com.checkvisitlocation.models.TagType;
+import com.checkvisitlocation.enums.TagType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

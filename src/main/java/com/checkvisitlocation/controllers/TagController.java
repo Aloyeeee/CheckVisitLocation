@@ -1,7 +1,7 @@
 package com.checkvisitlocation.controllers;
 
 import com.checkvisitlocation.models.Location;
-import com.checkvisitlocation.models.TagType;
+import com.checkvisitlocation.enums.TagType;
 import com.checkvisitlocation.services.LocationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

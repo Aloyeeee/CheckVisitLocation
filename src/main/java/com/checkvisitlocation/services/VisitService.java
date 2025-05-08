@@ -3,12 +3,11 @@ package com.checkvisitlocation.services;
 import com.checkvisitlocation.dtos.VisitRequest;
 import com.checkvisitlocation.dtos.VisitResponse;
 import com.checkvisitlocation.models.Location;
-import com.checkvisitlocation.models.LocationType;
+import com.checkvisitlocation.enums.LocationType;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.models.Visit;
 import com.checkvisitlocation.repositories.LocationRepository;
 import com.checkvisitlocation.repositories.VisitRepository;
-import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,12 +21,10 @@ public class VisitService {
     private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
     private final VisitRepository visitRepository;
     private final LocationRepository locationRepository;
-    private final Validator validator;
 
-    public VisitService(VisitRepository visitRepository, LocationRepository locationRepository, Validator validator) {
+    public VisitService(VisitRepository visitRepository, LocationRepository locationRepository) {
         this.visitRepository = visitRepository;
         this.locationRepository = locationRepository;
-        this.validator = validator;
     }
 
     public List<VisitResponse> getUserVisits(User user) {
@@ -56,9 +53,7 @@ public class VisitService {
 
     @Transactional
     public Long createVisit(VisitRequest visitRequest, User user) {
-        if (visitRequest.getRating() < 1 || visitRequest.getRating() > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5");
-        }
+
         Location location = locationRepository.findById(visitRequest.getLocationId())
                 .orElseThrow(() -> new IllegalArgumentException("Location not found with ID: " + visitRequest.getLocationId()));
 

@@ -1,7 +1,7 @@
 package com.checkvisitlocation.services;
 
 import com.checkvisitlocation.models.Tag;
-import com.checkvisitlocation.models.TagType;
+import com.checkvisitlocation.enums.TagType;
 import com.checkvisitlocation.repositories.TagRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

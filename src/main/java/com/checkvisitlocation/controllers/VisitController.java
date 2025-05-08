@@ -2,7 +2,7 @@ package com.checkvisitlocation.controllers;
 
 import com.checkvisitlocation.dtos.VisitResponse;
 import com.checkvisitlocation.dtos.VisitRequest;
-import com.checkvisitlocation.models.LocationType;
+import com.checkvisitlocation.enums.LocationType;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.services.VisitService;
 import io.swagger.v3.oas.annotations.Operation;

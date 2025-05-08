@@ -1,5 +1,6 @@
 package com.checkvisitlocation.models;
 
+import com.checkvisitlocation.enums.LocationType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

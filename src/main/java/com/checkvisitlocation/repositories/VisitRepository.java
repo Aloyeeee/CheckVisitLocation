@@ -1,6 +1,6 @@
 package com.checkvisitlocation.repositories;
 
-import com.checkvisitlocation.models.LocationType;
+import com.checkvisitlocation.enums.LocationType;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.models.Visit;
 import org.springframework.data.jpa.repository.JpaRepository;
