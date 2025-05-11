@@ -1,10 +1,13 @@
 package com.checkvisitlocation.services;
 
+import com.checkvisitlocation.dtos.LocationWithVisitCountResponse;
+import com.checkvisitlocation.enums.LocationType;
+import com.checkvisitlocation.enums.TagType;
 import com.checkvisitlocation.models.Location;
 import com.checkvisitlocation.models.LocationTranslation;
 import com.checkvisitlocation.models.Tag;
-import com.checkvisitlocation.enums.TagType;
 import com.checkvisitlocation.repositories.LocationRepository;
+import com.checkvisitlocation.repositories.LocationTranslationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,66 +18,64 @@ import java.util.stream.Collectors;
 @Service
 public class LocationService {
     private final LocationRepository locationRepository;
-    private final TagService tagService;
+    private final LocationTranslationRepository translationRepository;
 
-    public LocationService(LocationRepository locationRepository, TagService tagService) {
+    public LocationService(LocationRepository locationRepository, LocationTranslationRepository translationRepository) {
         this.locationRepository = locationRepository;
-        this.tagService = tagService;
+        this.translationRepository = translationRepository;
     }
 
-    @Transactional
-    public Location addTagsToLocation(Long locationId, List<TagType> tagTypes) {
+    @Transactional(readOnly = true)
+    public List<LocationWithVisitCountResponse> findLocationsByTags(List<TagType> tags) {
+        List<Object[]> results = tags == null || tags.isEmpty()
+                ? locationRepository.findAllWithVisitCount()
+                : locationRepository.findByTagTypesWithVisitCount(tags);
+
+        return results.stream().map(result -> {
+            Location location = (Location) result[0];
+            Long visitCount = (Long) result[1];
+            return new LocationWithVisitCountResponse(
+                    location.getId(),
+                    location.getName(),
+                    location.getDescription(),
+                    location.getAddress(),
+                    location.getGeoTag(),
+                    location.getType(),
+                    location.getTags().stream().map(Tag::getType).collect(Collectors.toSet()),
+                    visitCount
+            );
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocationWithVisitCountResponse> findLocationsByTypes(List<LocationType> types) {
+        List<Object[]> results = types == null || types.isEmpty()
+                ? locationRepository.findAllWithVisitCount()
+                : locationRepository.findByTypesWithVisitCount(types);
+
+        return results.stream().map(result -> {
+            Location location = (Location) result[0];
+            Long visitCount = (Long) result[1];
+            return new LocationWithVisitCountResponse(
+                    location.getId(),
+                    location.getName(),
+                    location.getDescription(),
+                    location.getAddress(),
+                    location.getGeoTag(),
+                    location.getType(),
+                    location.getTags().stream().map(Tag::getType).collect(Collectors.toSet()),
+                    visitCount
+            );
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public void getLocationWithTranslation(Long locationId, String languageCode) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new IllegalArgumentException("Location not found with ID: " + locationId));
-
-        Set<Tag> tags = tagTypes.stream()
-                .map(tagService::getOrCreateTag)
-                .collect(Collectors.toSet());
-        location.getTags().addAll(tags);
-
-        return locationRepository.save(location);
-    }
-
-    @Transactional
-    public Location removeTagsFromLocation(Long locationId, List<TagType> tagTypes) {
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new IllegalArgumentException("Location not found with ID: " + locationId));
-
-        Set<Tag> tagsToRemove = tagTypes.stream()
-                .map(tagService::getOrCreateTag)
-                .collect(Collectors.toSet());
-        location.getTags().removeAll(tagsToRemove);
-
-        return locationRepository.save(location);
-    }
-
-    public List<Location> findLocationsByTags(List<TagType> tagTypes) {
-        return locationRepository.findByTagTypes(tagTypes);
-    }
-
-    @Transactional
-    public Location addTranslation(Long locationId, LocationTranslation translation) {
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new IllegalArgumentException("Location not found with ID: " + locationId));
-
-        translation.setLocation(location);
-        location.getTranslations().add(translation);
-
-        return locationRepository.save(location);
-    }
-
-    public Location getLocationWithTranslation(Long locationId, String languageCode) {
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new IllegalArgumentException("Location not found with ID: " + locationId));
-
-        location.getTranslations().stream()
-                .filter(t -> t.getLanguageCode().equals(languageCode))
-                .findFirst()
-                .ifPresent(translation -> {
-                    location.setName(translation.getName());
-                    location.setDescription(translation.getDescription());
-                });
-
-        return location;
+        translationRepository.findByLocationIdAndLanguageCode(locationId, languageCode).ifPresent(translation -> {
+            location.setName(translation.getName());
+            location.setDescription(translation.getDescription());
+        });
     }
 }
