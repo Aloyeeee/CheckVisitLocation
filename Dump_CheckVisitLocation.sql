@@ -1,15 +1,13 @@
-CREATE DATABASE  IF NOT EXISTS `checkvisitlocation` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `checkvisitlocation`;
--- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: checkvisitlocation
+-- Host: localhost    Database: checkvisitlocation
 -- ------------------------------------------------------
 -- Server version	8.0.41
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -40,6 +38,7 @@ CREATE TABLE `location_tags` (
 
 LOCK TABLES `location_tags` WRITE;
 /*!40000 ALTER TABLE `location_tags` DISABLE KEYS */;
+INSERT INTO `location_tags` VALUES (1,1),(2,1),(7,1),(12,1),(16,1),(25,1),(37,1),(55,1),(61,1),(67,1),(73,1),(79,1),(85,1),(91,1),(97,1),(251,1),(31,2),(529,2),(2,3),(3,3),(4,3),(9,3),(10,3),(12,3),(13,3),(15,3),(17,3),(18,3),(19,3),(20,3),(21,3),(22,3),(24,3),(26,3),(28,3),(30,3),(33,3),(40,3),(41,3),(42,3),(44,3),(45,3),(47,3),(50,3),(51,3),(52,3),(54,3),(55,3),(56,3),(57,3),(58,3),(60,3),(61,3),(62,3),(63,3),(64,3),(66,3),(67,3),(68,3),(69,3),(70,3),(72,3),(73,3),(74,3),(75,3),(76,3),(78,3),(79,3),(80,3),(81,3),(82,3),(84,3),(85,3),(86,3),(87,3),(88,3),(90,3),(91,3),(92,3),(93,3),(94,3),(96,3),(97,3),(98,3),(99,3),(100,3),(529,3),(3,5),(4,5),(8,5),(9,5),(10,5),(13,5),(17,5),(18,5),(20,5),(22,5),(24,5),(28,5),(29,5),(33,5),(36,5),(40,5),(41,5),(43,5),(44,5),(46,5),(49,5),(50,5),(51,5),(52,5),(54,5),(57,5),(58,5),(60,5),(63,5),(64,5),(66,5),(69,5),(70,5),(72,5),(75,5),(76,5),(78,5),(81,5),(82,5),(84,5),(87,5),(88,5),(90,5),(93,5),(94,5),(96,5),(99,5),(100,5),(1,6),(7,6),(16,6),(25,6),(37,6),(42,6),(48,6),(5,7),(14,7),(21,7),(27,7),(32,7),(34,7),(38,7),(45,7),(53,7),(59,7),(65,7),(71,7),(77,7),(83,7),(89,7),(95,7),(251,7),(3,8),(10,8),(20,8),(50,8),(2,9),(4,9),(6,9),(8,9),(9,9),(11,9),(13,9),(15,9),(17,9),(18,9),(19,9),(22,9),(23,9),(24,9),(26,9),(28,9),(29,9),(30,9),(33,9),(35,9),(36,9),(39,9),(40,9),(41,9),(43,9),(44,9),(46,9),(47,9),(49,9),(52,9),(54,9),(56,9),(58,9),(60,9),(62,9),(64,9),(66,9),(68,9),(70,9),(72,9),(74,9),(76,9),(78,9),(80,9),(82,9),(84,9),(86,9),(88,9),(90,9),(92,9),(94,9),(96,9),(98,9),(100,9),(1,10),(2,10),(6,10),(7,10),(11,10),(12,10),(15,10),(16,10),(19,10),(21,10),(23,10),(25,10),(26,10),(30,10),(31,10),(35,10),(37,10),(39,10),(42,10),(43,10),(47,10),(48,10),(55,10),(56,10),(61,10),(62,10),(67,10),(68,10),(73,10),(74,10),(79,10),(80,10),(85,10),(86,10),(91,10),(92,10),(97,10),(98,10),(251,10),(529,10),(1,11),(6,11),(11,11),(25,11),(34,11),(39,11),(48,11),(5,12),(14,12),(23,12),(27,12),(32,12),(38,12),(53,12),(59,12),(65,12),(71,12),(77,12),(83,12),(89,12),(95,12),(3,13),(4,13),(7,13),(8,13),(9,13),(10,13),(13,13),(17,13),(18,13),(24,13),(28,13),(29,13),(33,13),(36,13),(40,13),(41,13),(46,13),(49,13),(50,13),(51,13),(52,13),(54,13),(57,13),(58,13),(60,13),(63,13),(64,13),(66,13),(69,13),(70,13),(72,13),(75,13),(76,13),(78,13),(81,13),(82,13),(84,13),(87,13),(88,13),(90,13),(93,13),(94,13),(96,13),(99,13),(100,13),(5,14),(14,14),(27,14),(31,14),(32,14),(34,14),(35,14),(38,14),(45,14),(53,14),(59,14),(65,14),(71,14),(77,14),(83,14),(89,14),(95,14),(36,15),(46,15),(49,15);
 /*!40000 ALTER TABLE `location_tags` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,7 +110,7 @@ CREATE TABLE `tags` (
   `type` enum('ROMANTIC','BUDGET','FAMILY_FRIENDLY','PET_FRIENDLY','OUTDOOR','LUXURY','CULTURAL','ADVENTURE','RELAXING','FOODIE','NIGHTLIFE','HISTORICAL','SCENIC','ACCESSIBLE','ECO_FRIENDLY') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_nx14m2p37yc6etfm0oax9ln84` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,6 +119,7 @@ CREATE TABLE `tags` (
 
 LOCK TABLES `tags` WRITE;
 /*!40000 ALTER TABLE `tags` DISABLE KEYS */;
+INSERT INTO `tags` VALUES (1,'ROMANTIC'),(2,'BUDGET'),(3,'FAMILY_FRIENDLY'),(4,'PET_FRIENDLY'),(5,'OUTDOOR'),(6,'LUXURY'),(7,'CULTURAL'),(8,'ADVENTURE'),(9,'RELAXING'),(10,'FOODIE'),(11,'NIGHTLIFE'),(12,'HISTORICAL'),(13,'SCENIC'),(14,'ACCESSIBLE'),(15,'ECO_FRIENDLY');
 /*!40000 ALTER TABLE `tags` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,10 +182,6 @@ INSERT INTO `visits` VALUES (1,'string',5,'2025-05-05',4,1),(2,'string',2,'2025-
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'checkvisitlocation'
---
-
---
 -- Dumping routines for database 'checkvisitlocation'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -198,4 +194,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-09 12:02:20
+-- Dump completed on 2025-05-11 22:11:13
