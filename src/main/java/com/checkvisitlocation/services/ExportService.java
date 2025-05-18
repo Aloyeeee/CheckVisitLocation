@@ -1,92 +1,65 @@
 package com.checkvisitlocation.services;
 
-
+import com.checkvisitlocation.dtos.AnalyticsResponse;
+import com.checkvisitlocation.dtos.ExportResult;
 import com.checkvisitlocation.enums.ExportFormat;
-import com.checkvisitlocation.dtos.VisitResponse;
 import com.checkvisitlocation.models.User;
 import com.checkvisitlocation.models.Visit;
 import com.checkvisitlocation.repositories.VisitRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.checkvisitlocation.visitors.CsvExportVisitor;
+import com.checkvisitlocation.visitors.DataExportVisitor;
+import com.checkvisitlocation.visitors.JsonExportVisitor;
+import com.checkvisitlocation.visitors.TxtExportVisitor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ExportService {
-    private static final Logger logger = LoggerFactory.getLogger(ExportService.class);
-    private final VisitRepository visitRepository;
-    private final ObjectMapper objectMapper;
 
-    public ExportService(VisitRepository visitRepository, ObjectMapper objectMapper) {
-        this.visitRepository = visitRepository;
-        this.objectMapper = objectMapper;
+    @Autowired
+    private VisitRepository visitRepository;
+
+    private DataExportVisitor getVisitor(ExportFormat format) {
+        return switch (format) {
+            case CSV -> new CsvExportVisitor();
+            case JSON -> new JsonExportVisitor();
+            case TXT -> new TxtExportVisitor();
+        };
     }
 
     public ExportResult exportVisits(User user, ExportFormat format) {
         List<Visit> visits = visitRepository.findByUser(user);
-        String filename = "visits_" + user.getUsername() + "." + format.getExtension();
-        String content;
+        DataExportVisitor visitor = getVisitor(format);
+        StringBuilder content = new StringBuilder();
 
-        try {
-            content = switch (format) {
-                case CSV -> toCsv(visits);
-                case JSON -> toJson(visits);
-                case TXT -> toText(visits);
-            };
-        } catch (Exception e) {
-            logger.error("Failed to export visits for user {} in format {}: {}", user.getUsername(), format, e.getMessage());
-            throw new IllegalStateException("Failed to export visits: " + e.getMessage());
+        if (format == ExportFormat.CSV) {
+            content.append("id,location,visitDate,rating,impressions\n");
+        } else if (format == ExportFormat.JSON) {
+            content.append("[");
         }
 
-        return new ExportResult(filename, content);
-    }
-
-    private String toCsv(List<Visit> visits) {
-        StringBuilder csv = new StringBuilder("id,location_name,visit_date,impressions,rating\n");
-        for (Visit visit : visits) {
-            if (visit.getLocation() == null) {
-                logger.warn("Visit {} has null location", visit.getId());
-                continue;
+        for (int i = 0; i < visits.size(); i++) {
+            String visitStr = visits.get(i).accept(visitor);
+            content.append(visitStr);
+            if (format == ExportFormat.JSON && i < visits.size() - 1) {
+                content.append(",");
             }
-            csv.append(String.format("%d,%s,%s,%s,%d\n",
-                    visit.getId(),
-                    escapeCsv(visit.getLocation().getName()),
-                    visit.getVisitDate(),
-                    escapeCsv(visit.getImpressions() != null ? visit.getImpressions() : ""),
-                    visit.getRating()));
         }
-        return csv.toString();
-    }
 
-    private String toJson(List<Visit> visits) throws Exception {
-        return objectMapper.writeValueAsString(
-                visits.stream()
-                .map(VisitResponse::new)
-                .collect(Collectors.toList()));
-    }
-
-    private String toText(List<Visit> visits) {
-        return visits.stream()
-                .filter(visit -> visit.getLocation() != null)
-                .map(visit -> String.format("Visit #%d: %s on %s, Rating: %d, Impressions: %s",
-                        visit.getId(),
-                        visit.getLocation().getName(),
-                        visit.getVisitDate(),
-                        visit.getRating(),
-                        visit.getImpressions() != null ? visit.getImpressions() : ""))
-                .collect(Collectors.joining("\n"));
-    }
-
-    private String escapeCsv(String value) {
-        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
-            return "\"" + value.replace("\"", "\"\"") + "\"";
+        if (format == ExportFormat.JSON) {
+            content.append("]");
         }
-        return value;
+
+        String filename = "visits_" + user.getUsername() + "." + format.getExtension();
+        return new ExportResult(filename, content.toString());
     }
 
-    public record ExportResult(String filename, String content) {
+    public ExportResult exportAnalytics(AnalyticsResponse analytics, ExportFormat format) {
+        DataExportVisitor visitor = getVisitor(format);
+        String content = analytics.accept(visitor);
+        String filename = "analytics." + format.getExtension();
+        return new ExportResult(filename, content);
     }
 }

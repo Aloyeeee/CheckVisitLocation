@@ -55,9 +55,9 @@ public class ExportController {
             var result = exportService.exportVisits(user, format);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + result.filename() + "\"")
+                            "attachment; filename=\"" + result.getFilename() + "\"")
                     .contentType(getMediaType(format))
-                    .body(result.content());
+                    .body(result.getContent());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Export failed: " + e.getMessage());
         }
