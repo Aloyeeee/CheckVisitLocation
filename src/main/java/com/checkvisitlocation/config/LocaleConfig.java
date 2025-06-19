@@ -23,7 +23,7 @@ public class LocaleConfig {
     @Bean
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-        resolver.setSupportedLocales(List.of(new Locale("en"), new Locale("uk")));
+        resolver.setSupportedLocales(List.of(Locale.ENGLISH, new Locale.Builder().setLanguage("uk").build()));
         resolver.setDefaultLocale(Locale.ENGLISH);
         return resolver;
     }
