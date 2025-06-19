@@ -15,14 +15,28 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Глобальний обробник винятків для REST API.
+ * Формує структуровані відповіді для різних типів помилок.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private final MessageSource messageSource;
 
+    /**
+     * Конструктор GlobalExceptionHandler.
+     * @param messageSource джерело локалізованих повідомлень
+     */
     public GlobalExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Обробляє помилки валідації аргументів.
+     * @param ex виняток
+     * @param locale локаль
+     * @return відповідь з деталями помилки
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex, Locale locale) {
         Map<String, Object> errors = new HashMap<>();
@@ -39,6 +53,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Обробляє помилки мапінгу JSON.
+     * @param ex виняток
+     * @param locale локаль
+     * @return відповідь з деталями помилки
+     */
     @ExceptionHandler(JsonMappingException.class)
     public ResponseEntity<Map<String, Object>> handleJsonMappingException(JsonMappingException ex, Locale locale) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -48,6 +68,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Обробляє некоректні аргументи.
+     * @param ex виняток
+     * @param locale локаль
+     * @return відповідь з деталями помилки
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex, Locale locale) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -58,6 +84,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Обробляє помилки аутентифікації (невірні облікові дані).
+     * @param ex виняток
+     * @param locale локаль
+     * @return відповідь з деталями помилки
+     */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleBadCredentialsException(BadCredentialsException ex, Locale locale) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -67,6 +99,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * Обробляє всі інші винятки.
+     * @param ex виняток
+     * @param locale локаль
+     * @return відповідь з деталями помилки
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex, Locale locale) {
         Map<String, Object> errorResponse = new HashMap<>();

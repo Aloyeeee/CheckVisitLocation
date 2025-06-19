@@ -11,16 +11,31 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Сервіс для роботи з користувачами та аутентифікації.
+ * Реалізує {@link UserDetailsService} для інтеграції зі Spring Security.
+ */
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Конструктор сервісу UserService.
+     * @param userRepository репозиторій користувачів
+     * @param passwordEncoder енкодер паролів
+     */
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Завантажує користувача за ім'ям користувача для Spring Security.
+     * @param username ім'я користувача
+     * @return деталі користувача
+     * @throws UsernameNotFoundException якщо користувача не знайдено
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
@@ -28,6 +43,12 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    /**
+     * Реєструє нового користувача.
+     * @param request запит на реєстрацію
+     * @return створений користувач
+     * @throws IllegalArgumentException якщо ім'я користувача вже існує
+     */
     public User register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
@@ -40,6 +61,14 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    /**
+     * Аутентифікує користувача за ім'ям та паролем.
+     * @param username ім'я користувача
+     * @param password пароль
+     * @return деталі користувача
+     * @throws IllegalArgumentException якщо ім'я або пароль null
+     * @throws BadCredentialsException якщо облікові дані невалідні
+     */
     public UserDetails authenticate(String username, String password) {
         if (username == null || password == null) {
             throw new IllegalArgumentException("Username and password must not be null");

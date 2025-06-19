@@ -15,16 +15,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Сервіс для роботи з локаціями, їх фільтрацією, підрахунком відвідувань та локалізацією.
+ */
 @Service
 public class LocationService {
     private final LocationRepository locationRepository;
     private final LocationTranslationRepository translationRepository;
 
+    /**
+     * Конструктор сервісу LocationService.
+     * @param locationRepository репозиторій локацій
+     * @param translationRepository репозиторій перекладів локацій
+     */
     public LocationService(LocationRepository locationRepository, LocationTranslationRepository translationRepository) {
         this.locationRepository = locationRepository;
         this.translationRepository = translationRepository;
     }
 
+    /**
+     * Повертає список локацій з кількістю відвідувань, відфільтрованих за тегами.
+     * @param tags список типів тегів
+     * @return список DTO локацій з кількістю відвідувань
+     */
     @Transactional(readOnly = true)
     public List<LocationWithVisitCountResponse> findLocationsByTags(List<TagType> tags) {
         List<Object[]> results = tags == null || tags.isEmpty()
@@ -47,6 +60,11 @@ public class LocationService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Повертає список локацій з кількістю відвідувань, відфільтрованих за типами локацій.
+     * @param types список типів локацій
+     * @return список DTO локацій з кількістю відвідувань
+     */
     @Transactional(readOnly = true)
     public List<LocationWithVisitCountResponse> findLocationsByTypes(List<LocationType> types) {
         List<Object[]> results = types == null || types.isEmpty()
@@ -69,6 +87,12 @@ public class LocationService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Оновлює назву та опис локації відповідно до перекладу, якщо він існує.
+     * @param locationId ідентифікатор локації
+     * @param languageCode код мови (наприклад, "uk", "en")
+     * @throws IllegalArgumentException якщо локацію не знайдено
+     */
     @Transactional(readOnly = true)
     public void getLocationWithTranslation(Long locationId, String languageCode) {
         Location location = locationRepository.findById(locationId)

@@ -8,24 +8,32 @@ import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * DTO для запиту аналітики відвідувань.
+ */
 public class AnalyticsRequest {
     @PastOrPresent(message = "Start date cannot be in the future")
+    /** Початкова дата періоду. */
     private LocalDate startDate;
 
     @PastOrPresent(message = "End date cannot be in the future")
+    /** Кінцева дата періоду. */
     private LocalDate endDate;
 
     private List<LocationType> locationTypes;
 
     @DecimalMin(value = "-90.0", message = "Latitude must be between -90 and 90")
     @DecimalMax(value = "90.0", message = "Latitude must be between -90 and 90")
+    /** Широта для фільтрації за відстанню. */
     private Double latitude;
 
     @DecimalMin(value = "-180.0", message = "Longitude must be between -180 and 180")
     @DecimalMax(value = "180.0", message = "Longitude must be between -180 and 180")
+    /** Довгота для фільтрації за відстанню. */
     private Double longitude;
 
     @DecimalMin(value = "0.0", message = "Distance must be non-negative")
+    /** Максимальна відстань (км) для фільтрації. */
     private Double maxDistance; // У кілометрах
 
     private String sortBy; // date, rating, locationName

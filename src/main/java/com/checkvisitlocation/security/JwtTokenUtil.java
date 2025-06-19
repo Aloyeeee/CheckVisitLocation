@@ -10,11 +10,20 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/**
+ * Утилітний клас для роботи з JWT токенами: генерація, валідація, отримання імені користувача.
+ */
 @Component
 public class JwtTokenUtil {
     private final SecretKey secretKey;
     private final Long expiration;
 
+    /**
+     * Конструктор JwtTokenUtil.
+     * @param secret секретний ключ (мінімум 32 символи)
+     * @param expiration час життя токена у мілісекундах
+     * @throws IllegalArgumentException якщо секретний ключ занадто короткий
+     */
     public JwtTokenUtil(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") Long expiration) {
         if (secret == null || secret.length() < 32) {
             throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
@@ -23,6 +32,11 @@ public class JwtTokenUtil {
         this.expiration = expiration;
     }
 
+    /**
+     * Генерує JWT токен для користувача.
+     * @param userDetails деталі користувача
+     * @return JWT токен
+     */
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
@@ -32,6 +46,12 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    /**
+     * Отримує ім'я користувача з JWT токена.
+     * @param token JWT токен
+     * @return ім'я користувача
+     * @throws JwtException якщо токен недійсний або прострочений
+     */
     public String getUsernameFromToken(String token) {
         try {
             return Jwts.parser()
@@ -47,6 +67,12 @@ public class JwtTokenUtil {
         }
     }
 
+    /**
+     * Перевіряє валідність токена для заданого користувача.
+     * @param token JWT токен
+     * @param userDetails деталі користувача
+     * @return true, якщо токен валідний
+     */
     public boolean validateToken(String token, UserDetails userDetails) {
         try {
             final String username = getUsernameFromToken(token);

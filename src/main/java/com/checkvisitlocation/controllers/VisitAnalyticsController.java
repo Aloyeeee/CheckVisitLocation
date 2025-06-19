@@ -15,12 +15,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Контролер для аналітики відвідувань користувача.
+ * Дозволяє отримати аналітичні дані за різними параметрами.
+ */
 @RestController
 @RequestMapping("/api/analytics")
 @Tag(name = "Analytics", description = "API для аналізу відвідувань")
 public class VisitAnalyticsController {
     private final VisitAnalyticsService analyticsService;
 
+    /**
+     * Конструктор VisitAnalyticsController.
+     * @param analyticsService сервіс аналітики відвідувань
+     */
     public VisitAnalyticsController(VisitAnalyticsService analyticsService) {
         this.analyticsService = analyticsService;
     }
@@ -40,6 +48,12 @@ public class VisitAnalyticsController {
                             content = @Content)
             }
     )
+    /**
+     * Аналізує відвідування користувача за заданими параметрами.
+     * @param user аутентифікований користувач
+     * @param request запит з параметрами аналітики
+     * @return відповідь з аналітичними даними
+     */
     public ResponseEntity<AnalyticsResponse> analyzeVisits(
             @Parameter(hidden = true) @AuthenticationPrincipal User user,
             @Valid @RequestBody AnalyticsRequest request) {

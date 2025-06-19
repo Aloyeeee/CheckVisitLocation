@@ -7,8 +7,15 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Конфігурація OpenAPI/Swagger для документування API та налаштування безпеки.
+ */
 @Configuration
 public class OpenApiConfig {
+    /**
+     * Налаштовує OpenAPI з інформацією про API та схемою безпеки JWT.
+     * @return OpenAPI
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

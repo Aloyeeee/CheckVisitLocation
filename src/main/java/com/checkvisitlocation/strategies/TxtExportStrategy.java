@@ -3,7 +3,16 @@ package com.checkvisitlocation.strategies;
 import com.checkvisitlocation.models.Visit;
 import java.util.List;
 
+/**
+ * Стратегія експорту відвідувань у текстовий формат.
+ * Реалізує інтерфейс {@link ExportStrategy}.
+ */
 public class TxtExportStrategy implements ExportStrategy {
+    /**
+     * Експортує список відвідувань у текстовий формат.
+     * @param visits список відвідувань
+     * @return текстовий звіт
+     */
     @Override
     public String export(List<Visit> visits) {
         StringBuilder sb = new StringBuilder();
@@ -19,6 +28,10 @@ public class TxtExportStrategy implements ExportStrategy {
         return sb.toString();
     }
 
+    /**
+     * Повертає розширення файлу для текстового експорту.
+     * @return "txt"
+     */
     @Override
     public String getFileExtension() {
         return "txt";

@@ -15,12 +15,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Сервіс для експорту відвідувань та аналітики у різні формати (CSV, JSON, TXT).
+ */
 @Service
 public class ExportService {
 
     @Autowired
     private VisitRepository visitRepository;
 
+    /**
+     * Повертає відповідного відвідувача для експорту згідно з форматом.
+     * @param format формат експорту
+     * @return реалізація DataExportVisitor
+     */
     private DataExportVisitor getVisitor(ExportFormat format) {
         return switch (format) {
             case CSV -> new CsvExportVisitor();
@@ -29,6 +37,12 @@ public class ExportService {
         };
     }
 
+    /**
+     * Експортує всі відвідування користувача у заданому форматі.
+     * @param user користувач
+     * @param format формат експорту
+     * @return результат експорту (файл та вміст)
+     */
     public ExportResult exportVisits(User user, ExportFormat format) {
         List<Visit> visits = visitRepository.findByUser(user);
         DataExportVisitor visitor = getVisitor(format);
@@ -56,6 +70,12 @@ public class ExportService {
         return new ExportResult(filename, content.toString());
     }
 
+    /**
+     * Експортує аналітичні дані у заданому форматі.
+     * @param analytics аналітична відповідь
+     * @param format формат експорту
+     * @return результат експорту (файл та вміст)
+     */
     public ExportResult exportAnalytics(AnalyticsResponse analytics, ExportFormat format) {
         DataExportVisitor visitor = getVisitor(format);
         String content = analytics.accept(visitor);

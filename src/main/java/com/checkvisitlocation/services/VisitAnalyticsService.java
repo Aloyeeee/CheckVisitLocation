@@ -13,17 +13,32 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Сервіс для аналітики відвідувань користувачів.
+ * Дозволяє фільтрувати, сортувати, аналізувати та формувати звіти по відвідуваннях.
+ */
 @Service
 public class VisitAnalyticsService {
     private static final Logger logger = LoggerFactory.getLogger(VisitAnalyticsService.class);
     private final VisitRepository visitRepository;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Конструктор сервісу VisitAnalyticsService.
+     * @param visitRepository репозиторій відвідувань
+     * @param objectMapper Jackson ObjectMapper для формування JSON-звітів
+     */
     public VisitAnalyticsService(VisitRepository visitRepository, ObjectMapper objectMapper) {
         this.visitRepository = visitRepository;
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Аналізує відвідування користувача згідно з параметрами запиту.
+     * @param user користувач
+     * @param request запит з параметрами аналітики
+     * @return відповідь з аналітичними даними
+     */
     public AnalyticsResponse analyzeVisits(User user, AnalyticsRequest request) {
         logger.info("Analyzing visits for user {}", user.getUsername());
 
@@ -57,6 +72,12 @@ public class VisitAnalyticsService {
         return response;
     }
 
+    /**
+     * Повертає відфільтрований список відвідувань згідно з параметрами запиту.
+     * @param user користувач
+     * @param request запит з параметрами фільтрації
+     * @return відфільтрований список відвідувань
+     */
     private List<Visit> getFilteredVisits(User user, AnalyticsRequest request) {
         List<Visit> visits;
 
@@ -84,6 +105,12 @@ public class VisitAnalyticsService {
         return visits;
     }
 
+    /**
+     * Обчислює середній рейтинг відвідувань користувача.
+     * @param user користувач
+     * @param request запит з параметрами фільтрації
+     * @return середній рейтинг
+     */
     private Double calculateAverageRating(User user, AnalyticsRequest request) {
         if (request.getStartDate() != null && request.getEndDate() != null) {
             return visitRepository.findAverageRatingByUserAndDateBetween(user, request.getStartDate(), request.getEndDate());
@@ -91,6 +118,13 @@ public class VisitAnalyticsService {
         return visitRepository.findAverageRatingByUser(user);
     }
 
+    /**
+     * Сортує список відвідувань за заданим полем і порядком.
+     * @param visits список відвідувань
+     * @param sortBy поле для сортування (rating, locationName, date)
+     * @param sortOrder порядок сортування (asc, desc)
+     * @return відсортований список відвідувань
+     */
     private List<Visit> sortVisits(List<Visit> visits, String sortBy, String sortOrder) {
         Comparator<Visit> comparator;
         switch (sortBy == null ? "date" : sortBy.toLowerCase()) {
@@ -113,6 +147,14 @@ public class VisitAnalyticsService {
         return visits.stream().sorted(comparator).collect(Collectors.toList());
     }
 
+    /**
+     * Перевіряє, чи знаходиться локація у межах заданої відстані від координат.
+     * @param geoTag геотег локації ("lat,lon")
+     * @param latitude широта
+     * @param longitude довгота
+     * @param maxDistance максимальна відстань (км)
+     * @return true, якщо локація у межах відстані
+     */
     private boolean isWithinDistance(String geoTag, double latitude, double longitude, double maxDistance) {
         if (geoTag == null || !geoTag.matches("^-?\\d{1,3}\\.\\d+,-?\\d{1,3}\\.\\d+$")) {
             return false;
@@ -126,6 +168,14 @@ public class VisitAnalyticsService {
         return distance <= maxDistance;
     }
 
+    /**
+     * Обчислює відстань між двома точками за формулою гаверсинусів.
+     * @param lat1 широта точки 1
+     * @param lon1 довгота точки 1
+     * @param lat2 широта точки 2
+     * @param lon2 довгота точки 2
+     * @return відстань у кілометрах
+     */
     private double calculateHaversineDistance(double lat1, double lon1, double lat2, double lon2) {
         final double R = 6371; // Радіус Землі в кілометрах
         double dLat = Math.toRadians(lat2 - lat1);
@@ -137,6 +187,14 @@ public class VisitAnalyticsService {
         return R * c;
     }
 
+    /**
+     * Генерує текстовий або JSON-звіт за результатами аналітики.
+     * @param averageRating середній рейтинг
+     * @param visits список відвідувань
+     * @param visitsByType кількість відвідувань за типами
+     * @param format формат звіту (json або текстовий)
+     * @return звіт у вигляді рядка
+     */
     private String generateReport(Double averageRating, List<Visit> visits, Map<String, Long> visitsByType, String format) {
         try {
             if ("json".equalsIgnoreCase(format)) {

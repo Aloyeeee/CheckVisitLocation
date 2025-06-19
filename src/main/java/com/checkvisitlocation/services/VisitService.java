@@ -16,17 +16,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Сервіс для роботи з відвідуваннями користувачів.
+ * Забезпечує отримання, фільтрацію та створення відвідувань.
+ */
 @Service
 public class VisitService {
     private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
     private final VisitRepository visitRepository;
     private final LocationRepository locationRepository;
 
+    /**
+     * Конструктор сервісу VisitService.
+     * @param visitRepository репозиторій відвідувань
+     * @param locationRepository репозиторій локацій
+     */
     public VisitService(VisitRepository visitRepository, LocationRepository locationRepository) {
         this.visitRepository = visitRepository;
         this.locationRepository = locationRepository;
     }
 
+    /**
+     * Повертає список відвідувань користувача.
+     * @param user користувач
+     * @return список DTO відвідувань
+     */
     public List<VisitResponse> getUserVisits(User user) {
         List<Visit> visits = visitRepository.findByUser(user);
         return visits.stream()
@@ -34,6 +48,12 @@ public class VisitService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Повертає список відвідувань користувача за типами локацій.
+     * @param user користувач
+     * @param locationTypes список типів локацій
+     * @return список DTO відвідувань
+     */
     public List<VisitResponse> getUserVisitsByLocationType(User user, List<LocationType> locationTypes) {
         List<Visit> visits = visitRepository.findByUserAndLocationTypeIn(user, locationTypes);
         return visits.stream()
@@ -41,6 +61,13 @@ public class VisitService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Повертає список відвідувань користувача за рейтингом.
+     * @param user користувач
+     * @param rating рейтинг (1-5)
+     * @return список DTO відвідувань
+     * @throws IllegalArgumentException якщо рейтинг не в діапазоні 1-5
+     */
     public List<VisitResponse> getUserVisitsByRating(User user, Integer rating) {
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
@@ -51,6 +78,13 @@ public class VisitService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Створює нове відвідування для користувача.
+     * @param visitRequest запит на створення відвідування
+     * @param user користувач
+     * @return ідентифікатор створеного відвідування
+     * @throws IllegalArgumentException якщо локацію не знайдено
+     */
     @Transactional
     public Long createVisit(VisitRequest visitRequest, User user) {
 

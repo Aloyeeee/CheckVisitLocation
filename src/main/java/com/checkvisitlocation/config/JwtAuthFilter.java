@@ -17,16 +17,33 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Фільтр для обробки JWT-аутентифікації у кожному запиті.
+ * Перевіряє токен, встановлює аутентифікацію у SecurityContext.
+ */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Конструктор JwtAuthFilter.
+     * @param jwtTokenUtil утиліта для роботи з JWT
+     * @param userDetailsService сервіс користувачів
+     */
     public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserDetailsService userDetailsService) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Основна логіка фільтрації: перевіряє JWT, встановлює аутентифікацію або повертає помилку.
+     * @param request HTTP-запит
+     * @param response HTTP-відповідь
+     * @param chain ланцюжок фільтрів
+     * @throws ServletException у разі помилки сервлета
+     * @throws IOException у разі помилки вводу/виводу
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

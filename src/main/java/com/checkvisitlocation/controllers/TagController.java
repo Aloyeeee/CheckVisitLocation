@@ -17,16 +17,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Контролер для отримання локацій за тегами та типами.
+ */
 @RestController
 @RequestMapping("/api/locations")
 @Tag(name = "Locations", description = "API для управління локаціями та тегами")
 public class TagController {
     private final LocationService locationService;
 
+    /**
+     * Конструктор TagController.
+     * @param locationService сервіс для роботи з локаціями
+     */
     public TagController(LocationService locationService) {
         this.locationService = locationService;
     }
 
+    /**
+     * Отримати локації за тегами з кількістю відвідувань та перекладом.
+     * @param tags список тегів для фільтрації
+     * @param languageCode код мови для перекладу
+     * @return список DTO локацій з кількістю відвідувань
+     */
     @Operation(summary = "Отримати локації за тегами",
             description = "Повертає список локацій, відфільтрованих за тегами, з кількістю відвідувань")
     @ApiResponses(value = {
@@ -45,6 +58,12 @@ public class TagController {
         return ResponseEntity.ok(locations);
     }
 
+    /**
+     * Отримати локації за типами з кількістю відвідувань та перекладом.
+     * @param types список типів локацій для фільтрації
+     * @param languageCode код мови для перекладу
+     * @return список DTO локацій з кількістю відвідувань
+     */
     @Operation(summary = "Отримати локації за типами",
             description = "Повертає список локацій, відфільтрованих за типами, з кількістю відвідувань")
     @ApiResponses(value = {

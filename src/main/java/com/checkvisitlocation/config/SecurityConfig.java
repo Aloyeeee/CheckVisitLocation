@@ -19,10 +19,21 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Конфігурація безпеки для Spring Security.
+ * Визначає фільтри, політики сесій, CORS, енкодер паролів та менеджер аутентифікації.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Налаштовує ланцюжок фільтрів безпеки, CORS, CSRF, політику сесій та JWT-фільтр.
+     * @param http HttpSecurity
+     * @param jwtAuthFilter фільтр JWT
+     * @return SecurityFilterChain
+     * @throws Exception у разі помилки конфігурації
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
@@ -39,16 +50,30 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Повертає енкодер паролів BCrypt.
+     * @return PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Повертає менеджер аутентифікації.
+     * @param authenticationConfiguration конфігурація аутентифікації
+     * @return AuthenticationManager
+     * @throws Exception у разі помилки
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Налаштовує CORS для дозволених джерел, методів і заголовків.
+     * @return CorsConfigurationSource
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -62,6 +87,11 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Повертає сервіс користувачів для Spring Security.
+     * @param userService сервіс користувачів
+     * @return UserDetailsService
+     */
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
         return userService;

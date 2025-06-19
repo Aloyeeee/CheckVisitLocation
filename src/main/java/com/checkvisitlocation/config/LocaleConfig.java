@@ -10,9 +10,16 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Конфігурація локалізації для підтримки багатомовності (en, uk).
+ */
 @Configuration
 public class LocaleConfig {
 
+    /**
+     * Налаштовує LocaleResolver для підтримки Accept-Language.
+     * @return LocaleResolver
+     */
     @Bean
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
@@ -21,6 +28,10 @@ public class LocaleConfig {
         return resolver;
     }
 
+    /**
+     * Налаштовує джерело повідомлень для локалізації.
+     * @return MessageSource
+     */
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();

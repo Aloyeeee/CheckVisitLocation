@@ -12,17 +12,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Контролер для аутентифікації та реєстрації користувачів.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
 
+    /**
+     * Конструктор AuthController.
+     * @param userService сервіс користувачів
+     * @param jwtTokenUtil утиліта для роботи з JWT токенами
+     */
     public AuthController(UserService userService, JwtTokenUtil jwtTokenUtil) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
+    /**
+     * Реєстрація нового користувача.
+     * @param request запит на реєстрацію
+     * @return створений користувач або повідомлення про помилку
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
@@ -33,6 +46,11 @@ public class AuthController {
         }
     }
 
+    /**
+     * Аутентифікація користувача (вхід).
+     * @param request запит на вхід
+     * @return JWT токен або повідомлення про помилку
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
