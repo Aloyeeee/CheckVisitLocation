@@ -15,16 +15,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Контролер для аналізу відвідувань користувачів.
+ * Надає API для отримання аналітичних даних про відвідування з різними параметрами фільтрації.
+ * 
+ * @author CheckVisitLocation Team
+ * @version 1.0
+ * @since 2025
+ */
 @RestController
 @RequestMapping("/api/analytics")
 @Tag(name = "Analytics", description = "API для аналізу відвідувань")
 public class VisitAnalyticsController {
     private final VisitAnalyticsService analyticsService;
 
+    /**
+     * Створює новий екземпляр контролера аналітики.
+     * 
+     * @param analyticsService сервіс для аналізу відвідувань
+     */
     public VisitAnalyticsController(VisitAnalyticsService analyticsService) {
         this.analyticsService = analyticsService;
     }
 
+    /**
+     * Аналізує відвідування користувача з можливістю фільтрації та сортування.
+     * 
+     * @param user поточний авторизований користувач
+     * @param request параметри аналізу (період, тип локації, відстань, сортування)
+     * @return ResponseEntity з результатами аналізу
+     */
     @PostMapping
     @Operation(
             summary = "Аналіз відвідувань користувача",

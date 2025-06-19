@@ -11,22 +11,53 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Сервіс для роботи з користувачами.
+ * Надає методи для реєстрації, аутентифікації та завантаження даних користувача.
+ * Реалізує інтерфейс UserDetailsService для інтеграції з Spring Security.
+ * 
+ * @author CheckVisitLocation Team
+ * @version 1.0
+ * @since 2025
+ */
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Конструктор для ініціалізації сервісу.
+     * 
+     * @param userRepository репозиторій для роботи з користувачами
+     * @param passwordEncoder кодувальник паролів
+     */
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Завантажує користувача за іменем користувача.
+     * Реалізація методу з інтерфейсу UserDetailsService.
+     * 
+     * @param username ім'я користувача
+     * @return об'єкт UserDetails з даними користувача
+     * @throws UsernameNotFoundException якщо користувач не знайдений
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
+    /**
+     * Реєструє нового користувача.
+     * Метод виконується в транзакції.
+     * 
+     * @param request дані для реєстрації
+     * @return створений користувач
+     * @throws IllegalArgumentException якщо ім'я користувача вже існує
+     */
     @Transactional
     public User register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -40,6 +71,15 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    /**
+     * Аутентифікує користувача за іменем та паролем.
+     * 
+     * @param username ім'я користувача
+     * @param password пароль
+     * @return об'єкт UserDetails з даними користувача
+     * @throws IllegalArgumentException якщо ім'я користувача або пароль є null
+     * @throws BadCredentialsException якщо облікові дані невірні
+     */
     public UserDetails authenticate(String username, String password) {
         if (username == null || password == null) {
             throw new IllegalArgumentException("Username and password must not be null");

@@ -7,8 +7,22 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Конфігурація OpenAPI для Swagger UI.
+ * Налаштовує документацію API та безпеку для Swagger UI.
+ * 
+ * @author CheckVisitLocation Team
+ * @version 1.0
+ * @since 2025
+ */
 @Configuration
 public class OpenApiConfig {
+    /**
+     * Створює конфігурацію OpenAPI для Swagger UI.
+     * Налаштовує інформацію про API, версію, опис та безпеку.
+     * 
+     * @return налаштований об'єкт OpenAPI
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

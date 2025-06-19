@@ -19,10 +19,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Конфігурація безпеки для Spring Security.
+ * Налаштовує безпеку, аутентифікацію, авторизацію та CORS для додатку.
+ * 
+ * @author CheckVisitLocation Team
+ * @version 1.0
+ * @since 2025
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Налаштовує ланцюжок фільтрів безпеки.
+     * Визначає правила безпеки, CORS, авторизацію та сесії.
+     * 
+     * @param http об'єкт HttpSecurity для налаштування
+     * @param jwtAuthFilter фільтр для JWT аутентифікації
+     * @return налаштований ланцюжок фільтрів безпеки
+     * @throws Exception якщо виникла помилка при налаштуванні
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
@@ -39,16 +56,34 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Створює кодувальник паролів BCrypt.
+     * 
+     * @return налаштований кодувальник паролів
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Створює менеджер аутентифікації.
+     * 
+     * @param authenticationConfiguration конфігурація аутентифікації
+     * @return налаштований менеджер аутентифікації
+     * @throws Exception якщо виникла помилка при створенні менеджера
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Налаштовує конфігурацію CORS.
+     * Дозволяє запити з локального сервера розробки.
+     * 
+     * @return налаштоване джерело конфігурації CORS
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -62,6 +97,12 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Створює сервіс для роботи з користувачами.
+     * 
+     * @param userService сервіс користувачів
+     * @return налаштований сервіс користувачів
+     */
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
         return userService;

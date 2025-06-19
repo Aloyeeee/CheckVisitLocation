@@ -10,11 +10,26 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/**
+ * Утиліта для роботи з JWT токенами.
+ * Надає методи для генерації, валідації та отримання даних з JWT токенів.
+ * 
+ * @author CheckVisitLocation Team
+ * @version 1.0
+ * @since 2025
+ */
 @Component
 public class JwtTokenUtil {
     private final SecretKey secretKey;
     private final Long expiration;
 
+    /**
+     * Створює новий екземпляр утиліти для роботи з JWT токенами.
+     * 
+     * @param secret секретний ключ для підпису токенів
+     * @param expiration час життя токена в мілісекундах
+     * @throws IllegalArgumentException якщо секретний ключ менше 32 символів
+     */
     public JwtTokenUtil(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") Long expiration) {
         if (secret == null || secret.length() < 32) {
             throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
@@ -23,6 +38,12 @@ public class JwtTokenUtil {
         this.expiration = expiration;
     }
 
+    /**
+     * Генерує JWT токен для користувача.
+     * 
+     * @param userDetails дані користувача
+     * @return згенерований JWT токен
+     */
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
@@ -32,6 +53,13 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    /**
+     * Отримує ім'я користувача з JWT токена.
+     * 
+     * @param token JWT токен
+     * @return ім'я користувача
+     * @throws JwtException якщо токен невалідний або прострочений
+     */
     public String getUsernameFromToken(String token) {
         try {
             return Jwts.parser()
@@ -47,6 +75,13 @@ public class JwtTokenUtil {
         }
     }
 
+    /**
+     * Перевіряє валідність JWT токена для користувача.
+     * 
+     * @param token JWT токен
+     * @param userDetails дані користувача
+     * @return true, якщо токен валідний
+     */
     public boolean validateToken(String token, UserDetails userDetails) {
         try {
             final String username = getUsernameFromToken(token);
@@ -56,6 +91,12 @@ public class JwtTokenUtil {
         }
     }
 
+    /**
+     * Перевіряє, чи прострочений JWT токен.
+     * 
+     * @param token JWT токен
+     * @return true, якщо токен прострочений
+     */
     private boolean isTokenExpired(String token) {
         try {
             Date expiration = Jwts.parser()

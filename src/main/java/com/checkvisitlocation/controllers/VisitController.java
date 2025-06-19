@@ -20,16 +20,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Контролер для управління відвідуваннями користувачів.
+ * Надає API для створення та отримання відвідувань з різними параметрами фільтрації.
+ * 
+ * @author CheckVisitLocation Team
+ * @version 1.0
+ * @since 2025
+ */
 @RestController
 @RequestMapping("/api/visits")
 @Tag(name = "Visits", description = "API для керування відвідуваннями")
 public class VisitController {
     private final VisitService visitService;
 
+    /**
+     * Створює новий екземпляр контролера відвідувань.
+     * 
+     * @param visitService сервіс для роботи з відвідуваннями
+     */
     public VisitController(VisitService visitService) {
         this.visitService = visitService;
     }
 
+    /**
+     * Отримує список всіх відвідувань авторизованого користувача.
+     * 
+     * @param user поточний авторизований користувач
+     * @return список відвідувань користувача
+     */
     @Operation(summary = "Get all visits for the authenticated user", description = "Returns a list of visits for the authenticated user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved visits"),
@@ -41,6 +60,13 @@ public class VisitController {
         return visitService.getUserVisits(user);
     }
 
+    /**
+     * Отримує список відвідувань користувача, відфільтрованих за типами локацій.
+     * 
+     * @param user поточний авторизований користувач
+     * @param locationTypes список типів локацій для фільтрації
+     * @return список відфільтрованих відвідувань
+     */
     @Operation(summary = "Get visits by location types for the authenticated user",
             description = "Returns a list of visits filtered by specified location types for the authenticated user")
     @ApiResponses(value = {
@@ -56,6 +82,13 @@ public class VisitController {
         return visitService.getUserVisitsByLocationType(user, locationTypes);
     }
 
+    /**
+     * Отримує список відвідувань користувача, відфільтрованих за рейтингом.
+     * 
+     * @param user поточний авторизований користувач
+     * @param rating рейтинг для фільтрації (від 1 до 5)
+     * @return список відфільтрованих відвідувань
+     */
     @Operation(summary = "Get visits by rating for the authenticated user",
             description = "Returns a list of visits filtered by specified rating for the authenticated user")
     @ApiResponses(value = {
@@ -71,6 +104,13 @@ public class VisitController {
         return visitService.getUserVisitsByRating(user, rating);
     }
 
+    /**
+     * Створює нове відвідування для авторизованого користувача.
+     * 
+     * @param user поточний авторизований користувач
+     * @param visitRequest дані для створення відвідування
+     * @return ResponseEntity з ID створеного відвідування
+     */
     @Operation(summary = "Create a new visit for the authenticated user",
             description = "Creates a new visit for the authenticated user with provided location ID, impressions, rating, and visit date, returning the visit ID in JSON format")
     @ApiResponses(value = {
