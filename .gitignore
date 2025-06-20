@@ -38,5 +38,9 @@ bin/
 ### VS Code ###
 .vscode/
 
+### VS ###
+.vs/
+
 ### Mac OS ###
 .DS_Store
+class_base_old.mmd
