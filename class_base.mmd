@@ -1,0 +1,346 @@
+---
+config:
+  theme: default
+  layout: elk
+---
+classDiagram
+    class ExportFormat {
+      <<enumeration>>
+      + getExtension()
+    }
+    class LocationType {
+      <<enumeration>>
+    }
+    class TagType {
+      <<enumeration>>
+    }
+    class UserRepository {
+      <<Interface>>
+      + findByUsername(String) Optional~User~
+      + existsByUsername(String) boolean
+    }
+    class VisitRepository {
+      <<Interface>>
+      + findByUser(User) List~Visit~
+      + findByVisitDateBetween(LocalDate, LocalDate) List~Visit~
+      + findByUserAndVisitDateBetween(User, LocalDate, LocalDate) List~Visit~
+      + findByUserAndLocationTypeIn(User, List~LocationType~) List~Visit~
+      + findByUserAndRating(User, Integer) List~Visit~
+      + findAverageRatingByUser(User) Double
+      + findAverageRatingByUserAndDateBetween(User, LocalDate, LocalDate): Double
+    }
+    class LocationRepository {
+      <<Interface>>
+      + findByTypeIn(List~LocationType~) List~Location~
+      + findByTagTypes(List~TagType~) List~Location~
+      + findByTagTypesWithVisitCount(List~TagType~) List~Object[]~
+      + findByTypesWithVisitCount(List~LocationType~) List~Object[]~
+      + findAllWithVisitCount() List~Object[]~
+    }
+    class LocationTranslationRepository {
+      <<Interface>>
+      + findByLocationIdAndLanguageCode(Long, String) Optional~LocationTranslation~
+    }
+    class TagRepository {
+      <<Interface>>
+      + findByType(TagType) Optional~Tag~
+    }
+    class User {
+      - Long id
+      - String username
+      - String password
+      + Get/Set()
+    }
+    class Visit {
+      - Long id
+      - User user
+      - Location location
+      - LocalDate visitDate
+      - String impressions
+      - Integer rating
+      + Get/Set()
+    }
+    class Location {
+      - Long id
+      - String name
+      - String description
+      - String address
+      - String geoTag
+      - LocationType type
+      - Set~Tag~ tags
+      - List~Visit~ visits
+      - List~LocationTranslation~ translations
+      + Get/Set()
+    }
+    class LocationTranslation {
+      - Long id
+      - Location location
+      - String languageCode
+      - String name
+      - String description
+      + Get/Set()
+    }
+    class Tag {
+      - Long id
+      - TagType type
+      + Get/Set()
+    }
+    class RegisterRequest {
+      - String username
+      - String password
+      + Get/Set()
+    }
+    class LoginRequest {
+      - String username
+      - String password
+      + Get/Set()
+    }
+    class AuthResponse {
+      - String token
+      + Get()
+    }
+    class VisitRequest {
+      - Long locationId
+      - String impressions
+      - Integer rating
+      - LocalDate visitDate
+      + toVisit() Visit
+      + Get/Set()
+    }
+    class VisitResponse {
+      - Long id
+      - Long userId
+      - String username
+      - Long locationId
+      - String locationName
+      - LocalDate visitDate
+      - String impressions
+      - Integer rating
+      + Get/Set()
+    }
+    class LocationWithVisitCountResponse {
+      - Long id
+      - String name
+      - String description
+      - String address
+      - String geoTag
+      - LocationType type
+      - Set~TagType~ tags
+      - long visitCount
+      + Get/Set()
+    }
+    class AnalyticsRequest {
+      - LocalDate startDate
+      - LocalDate endDate
+      - List~LocationType~ locationTypes
+      - Double latitude
+      - Double longitude
+      - Double maxDistance
+      - String sortBy
+      - String sortOrder
+      - String reportFormat
+      + Get/Set()
+    }
+    class AnalyticsResponse {
+      - Double averageRating
+      - Long totalVisits
+      - Map~String, Long~ visitsByType
+      - List~Visit~ filteredVisits
+      - String report
+      + Get/Set()
+    }
+    class AuthController {
+      - UserService userService
+      - JwtTokenUtil jwtTokenUtil
+      + register(RegisterRequest) ResponseEntity~?~
+      + login(LoginRequest) ResponseEntity~?~
+    }
+    class VisitController {
+      - VisitService visitService
+      + getUserVisits(User) List~VisitResponse~
+      + getUserVisitsByLocationType(User, List~LocationType~) List~VisitResponse~
+      + getUserVisitsByRating(User, Integer) List~VisitResponse~
+      + createVisit(User, VisitRequest) ResponseEntity~Map~String, Long~~
+    }
+    class TagController {
+      - LocationService locationService
+      + getLocationsByTags(List~TagType~, String) ResponseEntity~List~LocationWithVisitCountResponse~~
+      + getLocationsByTypes(List~LocationType~, String) ResponseEntity~List~LocationWithVisitCountResponse~~
+    }
+    class VisitAnalyticsController {
+      - VisitAnalyticsService analyticsService
+      + analyzeVisits(User, AnalyticsRequest) ResponseEntity~AnalyticsResponse~
+    }
+    class ExportController {
+      - ExportService exportService
+      + exportData(User, ExportFormat) ResponseEntity~?~
+      + getMediaType(ExportFormat) MediaType
+    }
+    class UserService {
+      - UserRepository userRepository
+      - PasswordEncoder passwordEncoder
+      + loadUserByUsername(String) UserDetails
+      + register(RegisterRequest) User
+      + authenticate(String, String) UserDetails
+    }
+    class VisitService {
+      - Logger logger$
+      - VisitRepository visitRepository
+      - LocationRepository locationRepository
+      + getUserVisits(User) List~VisitResponse~
+      + getUserVisitsByLocationType(User, List~LocationType~) List~VisitResponse~
+      + getUserVisitsByRating(User, Integer) List~VisitResponse~
+      + createVisit(VisitRequest, User) Long
+    }
+    class LocationService {
+      - LocationRepository locationRepository
+      - LocationTranslationRepository translationRepository
+      + findLocationsByTags(List~TagType~) List~LocationWithVisitCountResponse~
+      + findLocationsByTypes(List~LocationType~) List~LocationWithVisitCountResponse~
+      + getLocationWithTranslation(Long, String) void
+    }
+    class TagService {
+      - TagRepository tagRepository
+      + getOrCreateTag(TagType) Tag
+    }
+    class VisitAnalyticsService {
+      - Logger logger$
+      - VisitRepository visitRepository
+      - ObjectMapper objectMapper
+      + analyzeVisits(User, AnalyticsRequest) AnalyticsResponse
+      + getFilteredVisits(User, AnalyticsRequest) List~Visit~
+      + calculateAverageRating(User, AnalyticsRequest) Double
+      + sortVisits(List~Visit~, String, String) List~Visit~
+      + isWithinDistance(String, double, double, double) boolean
+      + calculateHaversineDistance(double, double, double, double) double
+      + generateReport(Double, List~Visit~, Map~String, Long~, String) String
+    }
+    class ExportService {
+      - Logger logger$
+      - VisitRepository visitRepository
+      - ObjectMapper objectMapper
+      + exportVisits(User, ExportFormat) ExportResult
+      - toCsv(List~Visit~) String
+      - toJson(List~Visit~) String
+      - toText(List~Visit~) String
+      - escapeCsv(String) String
+    }
+    class ExportService.ExportResult {
+      +String filename
+      +String content
+    }
+    class ExportStrategy {
+      <<Interface>>
+      + export(List~Visit~) String
+      + getFileExtension() String
+    }
+    class CsvExportStrategy {
+      + export(List~Visit~) String
+      + getFileExtension() String
+      + escapeCsv(String) String
+    }
+    class JsonExportStrategy {
+      - ObjectMapper objectMapper
+      + export(List~Visit~) String
+      + getFileExtension() String
+    }
+    class TxtExportStrategy {
+      + export(List~Visit~) String
+      + getFileExtension() String
+    }
+    class SecurityConfig {
+      + securityFilterChain(HttpSecurity, JwtAuthFilter) SecurityFilterChain
+      + passwordEncoder() PasswordEncoder
+      + authenticationManager(AuthenticationConfiguration) AuthenticationManager
+      + corsConfigurationSource() CorsConfigurationSource
+      + userDetailsService(UserService) UserDetailsService
+    }
+    class JwtAuthFilter {
+      - JwtTokenUtil jwtTokenUtil
+      - UserDetailsService userDetailsService
+      # doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain) void
+    }
+    class LocaleConfig {
+      + localeResolver() LocaleResolver
+      + messageSource() MessageSource
+    }
+    class GlobalExceptionHandler {
+      - MessageSource messageSource
+      + handleValidationExceptions(MethodArgumentNotValidException, Locale) ResponseEntity~Map~String, Object~~
+      + handleJsonMappingException(JsonMappingException, Locale) ResponseEntity~Map~String, Object~~
+      + handleIllegalArgumentException(IllegalArgumentException, Locale) ResponseEntity~Map~String, Object~~
+      + handleBadCredentialsException(BadCredentialsException, Locale) ResponseEntity~Map~String, Object~~
+      + handleGeneralException(Exception, Locale) ResponseEntity~Map~String, Object~~
+    }
+    class OpenApiConfig {
+      + customOpenAPI() OpenAPI
+    }
+    class JwtTokenUtil {
+      - SecretKey secretKey
+      - Long expiration
+      + generateToken(UserDetails) String
+      + getUsernameFromToken(String) String
+      + validateToken(String, UserDetails) boolean
+      + isTokenExpired(String) boolean
+    }
+    %% Connections section
+    %% Repository - Model
+    UserRepository --> User
+    VisitRepository --> User
+    VisitRepository --> Visit
+    VisitRepository --> LocationType
+    LocationRepository --> Location
+    LocationRepository --> LocationType
+    LocationRepository --> TagType
+    LocationTranslationRepository --> LocationTranslation
+    LocationTranslationRepository --> Location
+    TagRepository --> TagType
+    TagRepository --> Tag
+    %% Model relationships
+    Visit --> User
+    Visit --> Location
+    Location --> LocationType
+    Location --> LocationTranslation
+    Location --> Tag
+    Location --> Visit
+    LocationTranslation --> Location
+    Tag --> TagType
+    %% DTO - Model
+    VisitResponse --> Visit
+    VisitResponse --> User
+    VisitResponse --> Location
+    LocationWithVisitCountResponse --> Location
+    LocationWithVisitCountResponse --> TagType
+    %% Controller ↔ Service, Service ↔ Repository
+    AuthController --> UserService
+    AuthController --> JwtTokenUtil
+    UserService --> UserRepository
+    VisitController --> VisitService
+    TagController --> LocationService
+    VisitAnalyticsController --> VisitAnalyticsService
+    ExportController --> ExportService
+    VisitService --> VisitRepository
+    VisitService --> LocationRepository
+    LocationService --> LocationRepository
+    LocationService --> LocationTranslationRepository
+    TagService --> TagRepository
+    VisitAnalyticsService --> VisitRepository
+    ExportService --> VisitRepository
+    %% Export strategy (strategy pattern)
+    CsvExportStrategy ..|> ExportStrategy
+    JsonExportStrategy ..|> ExportStrategy
+    TxtExportStrategy ..|> ExportStrategy
+    ExportService ..> ExportStrategy
+    %% Enums in models/requests
+    Visit --> LocationType
+    VisitRequest --> Visit
+    LocationWithVisitCountResponse --> LocationType
+    %% Security
+    JwtAuthFilter --> JwtTokenUtil
+    SecurityConfig --> JwtAuthFilter
+    SecurityConfig --> UserService
+    %% Exception handling
+    %%GlobalExceptionHandler --> MessageSource
+    %% Misc
+    ExportService --> ExportFormat
+    ExportService --> ExportService.ExportResult
