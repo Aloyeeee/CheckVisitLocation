@@ -4,7 +4,6 @@ import com.checkvisitlocation.dtos.LocationWithVisitCountResponse;
 import com.checkvisitlocation.enums.LocationType;
 import com.checkvisitlocation.enums.TagType;
 import com.checkvisitlocation.models.Location;
-import com.checkvisitlocation.models.LocationTranslation;
 import com.checkvisitlocation.models.Tag;
 import com.checkvisitlocation.repositories.LocationRepository;
 import com.checkvisitlocation.repositories.LocationTranslationRepository;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

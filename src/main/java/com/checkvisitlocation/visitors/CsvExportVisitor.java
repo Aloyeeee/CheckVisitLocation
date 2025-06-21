@@ -4,12 +4,13 @@ import com.checkvisitlocation.models.Visit;
 import com.checkvisitlocation.dtos.AnalyticsResponse;
 
 /**
- * Відвідувач для експорту даних у формат CSV.
+ * Відвідувач для експорту даних у форматі CSV.
  * Реалізує інтерфейс {@link DataExportVisitor} для Visit та AnalyticsResponse.
  */
 public class CsvExportVisitor implements DataExportVisitor {
+    
     /**
-     * Експортує об'єкт Visit у формат CSV.
+     * Експортує об'єкт Visit у форматі CSV.
      * @param visit відвідування для експорту
      * @return CSV-рядок з даними відвідування
      */
@@ -24,7 +25,7 @@ public class CsvExportVisitor implements DataExportVisitor {
     }
 
     /**
-     * Експортує об'єкт AnalyticsResponse у формат CSV.
+     * Експортує об'єкт AnalyticsResponse у форматі CSV.
      * @param analytics аналітична відповідь для експорту
      * @return CSV-рядок з аналітичними даними
      */
