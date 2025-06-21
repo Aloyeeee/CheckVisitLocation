@@ -260,10 +260,6 @@ classDiagram
       - UserDetailsService userDetailsService
       # doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain) void
     }
-    class LocaleConfig {
-      + localeResolver() LocaleResolver
-      + messageSource() MessageSource
-    }
     class GlobalExceptionHandler {
       - MessageSource messageSource
       + handleValidationExceptions(MethodArgumentNotValidException, Locale) ResponseEntity~Map~String, Object~~
@@ -282,8 +278,21 @@ classDiagram
       + getUsernameFromToken(String) String
       + validateToken(String, UserDetails) boolean
       + isTokenExpired(String) boolean
+    } 
+       class LocaleConfig {
+      + localeResolver() LocaleResolver
+      + messageSource() MessageSource
     }
     %% Connections section
+    AuthController --> AuthResponse
+    AuthController --> RegisterRequest
+    AuthController --> LoginRequest
+    VisitAnalyticsController --> AnalyticsRequest
+    VisitAnalyticsController --> AnalyticsResponse
+    VisitAnalyticsService --> AnalyticsRequest
+    VisitAnalyticsService --> AnalyticsResponse
+    AnalyticsRequest --> LocationType
+    AnalyticsResponse --> Visit
     %% Repository - Model
     UserRepository --> User
     VisitRepository --> User
